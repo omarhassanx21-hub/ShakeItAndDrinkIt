@@ -1,0 +1,246 @@
+:root {
+    --bg-color: #0f172a;
+    --container-bg: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
+    --highlight: #fbbf24;
+    --whatsapp: #25D366;
+    --input-bg: #0f172a;
+    --border: #475569;
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 15px;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--container-bg);
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+}
+
+/* Language Switcher */
+.lang-switcher {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.lang-btn {
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.lang-btn.active {
+    background: var(--highlight);
+    color: #000;
+    border-color: var(--highlight);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+}
+
+h1 { 
+    margin: 0; 
+    font-size: 1.75rem;
+    letter-spacing: -0.05em;
+    color: var(--highlight);
+}
+
+p.subtitle { 
+    color: var(--text-secondary);
+    margin-top: 8px;
+    font-size: 0.95rem;
+}
+
+.cocktail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.cocktail-info h3 { 
+    margin: 0; 
+    font-size: 1.1rem; 
+    font-weight: 600;
+}
+
+.cocktail-info span { 
+    font-size: 0.9rem; 
+    color: var(--text-secondary); 
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.quantity-controls:focus-within {
+    border-color: var(--accent);
+}
+
+.qty-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-size: 1.25rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.qty-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.qty-btn:active {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+input[type="number"] {
+    width: 45px;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    color: var(--text-primary);
+    text-align: center;
+    font-size: 16px; /* Prevents iOS zoom */
+    font-weight: 600;
+}
+
+.shop-info {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+input[type="text"] {
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    font-size: 16px; /* Prevents iOS zoom */
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* Remove Number Spinners */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+#whatsapp-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background-color: var(--whatsapp);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+#whatsapp-btn:hover { background-color: #16a34a; }
+#whatsapp-btn:active { transform: scale(0.98); }
+
+/* Toast Notifications */
+#toast-container {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: calc(100% - 40px);
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background: #ef4444;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+    animation: slideUp 0.3s ease-out forwards;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* RTL Support */
+body.rtl {
+    direction: rtl;
+}
+
+/* Media query for small phones */
+@media (max-width: 480px) {
+    .container {
+        padding: 20px;
+    }
+    h1 { font-size: 1.5rem; }
+}

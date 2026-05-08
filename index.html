@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shake It And Drink It - Order Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="lang-switcher">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="ar">العربية</button>
+    </div>
+
+    <header>
+        <h1 data-i18n="title">Shake It And Drink It</h1>
+        <p class="subtitle" data-i18n="subtitle">Fresh cocktails for your coffee shop</p>
+    </header>
+
+    <div id="menu">
+        <!-- Cocktail 1 -->
+        <div class="cocktail-item">
+            <div class="cocktail-info">
+                <h3 data-i18n="espresso_martini">Espresso Martini</h3>
+                <span>$8.50 / <span data-i18n="unit">unit</span></span>
+            </div>
+            <div class="quantity-controls">
+                <button class="qty-btn minus" type="button">−</button>
+                <input type="number" class="qty" data-name="espresso_martini" min="0" value="0" readonly>
+                <button class="qty-btn plus" type="button">+</button>
+            </div>
+        </div>
+
+        <!-- Cocktail 2 -->
+        <div class="cocktail-item">
+            <div class="cocktail-info">
+                <h3 data-i18n="classic_negroni">Classic Negroni</h3>
+                <span>$9.00 / <span data-i18n="unit">unit</span></span>
+            </div>
+            <div class="quantity-controls">
+                <button class="qty-btn minus" type="button">−</button>
+                <input type="number" class="qty" data-name="classic_negroni" min="0" value="0" readonly>
+                <button class="qty-btn plus" type="button">+</button>
+            </div>
+        </div>
+
+        <!-- Cocktail 3 -->
+        <div class="cocktail-item">
+            <div class="cocktail-info">
+                <h3 data-i18n="old_fashioned">Old Fashioned</h3>
+                <span>$10.00 / <span data-i18n="unit">unit</span></span>
+            </div>
+            <div class="quantity-controls">
+                <button class="qty-btn minus" type="button">−</button>
+                <input type="number" class="qty" data-name="old_fashioned" min="0" value="0" readonly>
+                <button class="qty-btn plus" type="button">+</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="shop-info">
+        <label for="shopName" data-i18n="shopLabel">Coffee Shop Name:</label>
+        <input type="text" id="shopName" data-i18n-placeholder="shopPlaceholder" placeholder="Enter your shop name..." required>
+    </div>
+
+    <button id="whatsapp-btn" data-i18n="orderBtn">Send Order via WhatsApp</button>
+</div>
+
+<div id="toast-container"></div>
+<script src="script.js"></script>
+</body>
+</html>
