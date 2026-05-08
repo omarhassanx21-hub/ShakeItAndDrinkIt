@@ -12,12 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
             unit: "unit",
             shopLabel: "Coffee Shop Name:",
             shopPlaceholder: "Enter your shop name...",
+            addressLabel: "Delivery Address:",
+            addressPlaceholder: "Enter your address...",
+            phoneLabel: "Contact Phone:",
+            phonePlaceholder: "Enter your phone number...",
             orderBtn: "Send Order via WhatsApp",
             alertName: "Please enter your coffee shop name.",
+            alertAddress: "Please enter your delivery address.",
+            alertPhone: "Please enter your phone number.",
             alertItems: "Please select at least one cocktail quantity.",
-            msgHeader: "*New Order from",
             msgItems: "Items:",
-            msgFooter: "Please confirm receipt!",
             espresso_martini: "Espresso Martini",
             classic_negroni: "Classic Negroni",
             old_fashioned: "Old Fashioned"
@@ -28,12 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
             unit: "وحدة",
             shopLabel: "اسم المقهى:",
             shopPlaceholder: "أدخل اسم المقهى الخاص بك...",
+            addressLabel: "عنوان التوصيل:",
+            addressPlaceholder: "أدخل عنوانك...",
+            phoneLabel: "رقم التواصل:",
+            phonePlaceholder: "أدخل رقم هاتفك...",
             orderBtn: "إرسال الطلب عبر واتساب",
             alertName: "يرجى إدخال اسم المقهى الخاص بك.",
+            alertAddress: "يرجى إدخال عنوان التوصيل الخاص بك.",
+            alertPhone: "يرجى إدخال رقم هاتفك.",
             alertItems: "يرجى اختيار كمية كوكتيل واحدة على الأقل.",
-            msgHeader: "*طلب جديد من",
             msgItems: "الأصناف:",
-            msgFooter: "يرجى تأكيد الاستلام!",
             espresso_martini: "إسبريسو مارتيني",
             classic_negroni: "كلاسيك نيغروني",
             old_fashioned: "أولد فاشون"
@@ -42,7 +50,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const orderBtn = document.getElementById('whatsapp-btn');
     const shopNameInput = document.getElementById('shopName');
+    const addressInput = document.getElementById('address');
+    const phoneInput = document.getElementById('phone');
     const langBtns = document.querySelectorAll('.lang-btn');
+
+    // Force numeric-only input for the phone field
+    phoneInput.addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/\D/g, '');
+    });
 
     const switchLanguage = (lang) => {
         currentLang = lang;
@@ -82,9 +97,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const sendOrder = () => {
         const shopName = shopNameInput.value.trim();
+        const address = addressInput.value.trim();
+        const phone = phoneInput.value.trim();
+
         if (!shopName) {
             showToast(translations[currentLang].alertName);
             shopNameInput.focus();
+            return;
+        }
+
+        if (!address) {
+            showToast(translations[currentLang].alertAddress);
+            addressInput.focus();
+            return;
+        }
+
+        if (!phone) {
+            showToast(translations[currentLang].alertPhone);
+            phoneInput.focus();
             return;
         }
 
@@ -108,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const t = translations[currentLang];
-        const message = `${t.msgHeader} ${shopName}*\n\n${t.msgItems}\n${orderDetails}\n${t.msgFooter}`;
+        const message = `*${shopName}*\n\n${t.msgItems}\n${orderDetails}\n${t.addressLabel} ${address}\n${t.phoneLabel} ${phone}`;
         
         // Constructing the URL with encoded message
         const whatsappUrl = `https://wa.me/${MY_PHONE_NUMBER}?text=${encodeURIComponent(message)}`;
