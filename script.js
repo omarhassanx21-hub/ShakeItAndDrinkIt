@@ -2,9 +2,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- CONFIGURATION ---
     const MY_PHONE_NUMBER = "96103036672"; // REPLACE WITH YOUR PHONE NUMBER (include country code, no +)
     const cocktailPrices = {
-        espresso_martini: 8.50,
-        classic_negroni: 9.00,
-        old_fashioned: 10.00
+        strawberry_s: 150000, strawberry_l: 450000,
+        mango_s: 150000, mango_l: 450000,
+        cocktail_s: 150000, cocktail_l: 450000,
+        banana_milk_s: 150000, banana_milk_l: 450000,
+        kiwi_s: 150000, kiwi_l: 450000,
+        berry_s: 150000, berry_l: 450000,
+        pineapple_s: 150000, pineapple_l: 450000,
+        lemonade_s: 150000, lemonade_l: 450000,
+        lemon_s: 150000, lemon_l: 450000,
+        watermelon_s: 150000, watermelon_l: 450000,
+        passion_fruit_s: 150000, passion_fruit_l: 450000,
+        avocado_s: 150000, avocado_l: 450000
     };
     // ---------------------
 
@@ -13,9 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const translations = {
         en: {
             title: "Shake It And Drink It",
-            subtitle: "Fresh cocktails for your coffee shop",
+            subtitle: "Fresh juices for your coffee shop",
             unit: "unit",
-            currency: "$",
+            currency: "L.P",
             shopLabel: "Coffee Shop Name:",
             shopPlaceholder: "Enter your shop name...",
             addressLabel: "Delivery Address:",
@@ -23,19 +32,34 @@ document.addEventListener('DOMContentLoaded', () => {
             orderBtn: "Send Order via WhatsApp",
             alertName: "Please enter your coffee shop name.",
             alertAddress: "Please enter your delivery address.",
-            alertItems: "Please select at least one cocktail quantity.",
+            alertItems: "Please select at least one juice quantity.",
             msgItems: "Items:",
             subtotal_label: "Subtotal",
             totalLabel: "Total",
-            espresso_martini: "Espresso Martini",
-            classic_negroni: "Classic Negroni",
-            old_fashioned: "Old Fashioned"
+            small_label: "Small 275ml",
+            large_label: "Large 1L",
+            strawberry: "Strawberry", mango: "Mango", cocktail: "Cocktail",
+            banana_milk: "Banana & Milk", kiwi: "Kiwi", berry: "Berry",
+            pineapple: "Pineapple", lemonade: "Lemonade", lemon: "Lemon",
+            watermelon: "Watermelon", passion_fruit: "Passion Fruit", avocado: "Avocado",
+            strawberry_s: "Strawberry (Small 275ml)", strawberry_l: "Strawberry (Large 1L)",
+            mango_s: "Mango (Small 275ml)", mango_l: "Mango (Large 1L)",
+            cocktail_s: "Cocktail (Small 275ml)", cocktail_l: "Cocktail (Large 1L)",
+            banana_milk_s: "Banana & Milk (Small 275ml)", banana_milk_l: "Banana & Milk (Large 1L)",
+            kiwi_s: "Kiwi (Small 275ml)", kiwi_l: "Kiwi (Large 1L)",
+            berry_s: "Berry (Small 275ml)", berry_l: "Berry (Large 1L)",
+            pineapple_s: "Pineapple (Small 275ml)", pineapple_l: "Pineapple (Large 1L)",
+            lemonade_s: "Lemonade (Small 275ml)", lemonade_l: "Lemonade (Large 1L)",
+            lemon_s: "Lemon (Small 275ml)", lemon_l: "Lemon (Large 1L)",
+            watermelon_s: "Watermelon (Small 275ml)", watermelon_l: "Watermelon (Large 1L)",
+            passion_fruit_s: "Passion Fruit (Small 275ml)", passion_fruit_l: "Passion Fruit (Large 1L)",
+            avocado_s: "Avocado (Small 275ml)", avocado_l: "Avocado (Large 1L)"
         },
         ar: {
             title: "خضا و شربا",
-            subtitle: "كوكتيلات طازجة لمقهى الخاص بك",
+            subtitle: "عصائر طازجة لمقهى الخاص بك",
             unit: "وحدة",
-            currency: "$",
+            currency: "L.P",
             shopLabel: "اسم المقهى:",
             shopPlaceholder: "أدخل اسم المقهى الخاص بك...",
             addressLabel: "عنوان التوصيل:",
@@ -43,13 +67,28 @@ document.addEventListener('DOMContentLoaded', () => {
             orderBtn: "إرسال الطلب عبر واتساب",
             alertName: "يرجى إدخال اسم المقهى الخاص بك.",
             alertAddress: "يرجى إدخال عنوان التوصيل الخاص بك.",
-            alertItems: "يرجى اختيار كمية كوكتيل واحدة على الأقل.",
+            alertItems: "يرجى اختيار كمية عصير واحدة على الأقل.",
             msgItems: "الأصناف:",
             subtotal_label: "المجموع الفرعي",
             totalLabel: "المجموع الكلي",
-            espresso_martini: "إسبريسو مارتيني",
-            classic_negroni: "كلاسيك نيغروني",
-            old_fashioned: "أولد فاشون"
+            small_label: "صغير 275 مل",
+            large_label: "كبير 1 ليتر",
+            strawberry: "فريز", mango: "منغا", cocktail: "كوكتيل",
+            banana_milk: "حليب و موز", kiwi: "كيوي", berry: "توت",
+            pineapple: "اناناس", lemonade: "ليموناضة", lemon: "ليمون",
+            watermelon: "بطيخ", passion_fruit: "باشن فروت", avocado: "افوكا",
+            strawberry_s: "فريز (صغير 275 مل)", strawberry_l: "فريز (كبير 1 ليتر)",
+            mango_s: "منغا (صغير 275 مل)", mango_l: "منغا (كبير 1 ليتر)",
+            cocktail_s: "كوكتيل (صغير 275 مل)", cocktail_l: "كوكتيل (كبير 1 ليتر)",
+            banana_milk_s: "حليب و موز (صغير 275 مل)", banana_milk_l: "حليب و موز (كبير 1 ليتر)",
+            kiwi_s: "كيوي (صغير 275 مل)", kiwi_l: "كيوي (كبير 1 ليتر)",
+            berry_s: "توت (صغير 275 مل)", berry_l: "توت (كبير 1 ليتر)",
+            pineapple_s: "اناناس (صغير 275 مل)", pineapple_l: "اناناس (كبير 1 ليتر)",
+            lemonade_s: "ليموناضة (صغير 275 مل)", lemonade_l: "ليموناضة (كبير 1 ليتر)",
+            lemon_s: "ليمون (صغير 275 مل)", lemon_l: "ليمون (كبير 1 ليتر)",
+            watermelon_s: "بطيخ (صغير 275 مل)", watermelon_l: "بطيخ (كبير 1 ليتر)",
+            passion_fruit_s: "باشن فروت (صغير 275 مل)", passion_fruit_l: "باشن فروت (كبير 1 ليتر)",
+            avocado_s: "افوكا (صغير 275 مل)", avocado_l: "افوكا (كبير 1 ليتر)"
         }
     };
 
@@ -89,12 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const subtotal = quantity * price;
             grandTotal += subtotal;
 
-            const subtotalDisplay = document.querySelector(`[data-subtotal="${nameKey}"]`);
-            if (subtotalDisplay) subtotalDisplay.textContent = `${currency}${subtotal.toFixed(2)}`;
         });
 
         const grandTotalDisplay = document.getElementById('grand-total-display');
-        if (grandTotalDisplay) grandTotalDisplay.textContent = `${currency}${grandTotal.toFixed(2)}`;
+        if (grandTotalDisplay) grandTotalDisplay.textContent = `${grandTotal.toLocaleString()} ${currency}`;
     };
 
     const showToast = (message) => {
@@ -144,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const itemTotal = quantity * price;
                 grandTotal += itemTotal;
                 
-                orderDetails += `- ${translatedName}: ${quantity} x ${t.currency}${price.toFixed(2)} = ${t.currency}${itemTotal.toFixed(2)}\n`;
+                orderDetails += `- ${translatedName}: ${quantity} x ${price.toLocaleString()} = ${itemTotal.toLocaleString()} ${t.currency}\n`;
                 hasItems = true;
             }
         });
@@ -155,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const t = translations[currentLang];
-        const message = `*${shopName}*\n\n${t.msgItems}\n${orderDetails}\n*${t.totalLabel}: ${t.currency}${grandTotal.toFixed(2)}*\n\n${t.addressLabel} ${address}`;
+        const message = `*${shopName}*\n\n${t.msgItems}\n${orderDetails}\n*${t.totalLabel}: ${grandTotal.toLocaleString()} ${t.currency}*\n\n${t.addressLabel} ${address}`;
         
         // Constructing the URL with encoded message
         const whatsappUrl = `https://wa.me/${MY_PHONE_NUMBER}?text=${encodeURIComponent(message)}`;

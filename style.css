@@ -96,38 +96,57 @@ header {
     padding-bottom: 10px;
 }
 
-h1 { 
-    margin: 0; 
-    font-size: 1.75rem;
-    letter-spacing: -0.07em;
-    font-weight: 900;
-    background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+#menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    width: 100%;
 }
 
-p.subtitle { 
-    color: var(--text-secondary);
-    margin-top: 8px;
-    font-size: 0.95rem;
+.juice-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 24px;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    display: flex;
+    flex-direction: column;
 }
 
-.cocktail-item {
+.juice-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--accent);
+    transform: translateY(-4px);
+}
+
+.flavor-title {
+    margin: 0 0 20px 0;
+    font-size: 1.4rem;
+    color: var(--highlight);
+    text-align: center;
+    letter-spacing: -0.02em;
+}
+
+.size-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 12px;
-    border-bottom: 1px solid var(--border);
-    transition: all 0.3s ease;
-    border-radius: 20px;
-    margin: 0 -8px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
 }
 
-.cocktail-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-    transform: scale(1.02);
+.size-row:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
+
+.size-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.size-info span:first-child { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+.price-tag { font-weight: 700; font-size: 1rem; color: var(--text-primary); }
 
 .cocktail-info h3 { 
     margin: 0; 
