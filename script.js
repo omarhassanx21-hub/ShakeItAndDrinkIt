@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         berry_s: 150000, berry_l: 450000,
         pineapple_s: 150000, pineapple_l: 450000,
         lemonade_s: 150000, lemonade_l: 450000,
-        lemon_s: 150000, lemon_l: 450000,
+        orange_s: 150000, orange_l: 450000,
         watermelon_s: 150000, watermelon_l: 450000,
         passion_fruit_s: 150000, passion_fruit_l: 450000,
         avocado_s: 150000, avocado_l: 450000
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             large_label: "Large 1L",
             strawberry: "Strawberry", mango: "Mango", cocktail: "Cocktail",
             banana_milk: "Banana & Milk", kiwi: "Kiwi", berry: "Berry",
-            pineapple: "Pineapple", lemonade: "Lemonade", lemon: "Lemon",
+            pineapple: "Pineapple", lemonade: "Lemonade", orange: "Orange",
             watermelon: "Watermelon", passion_fruit: "Passion Fruit", avocado: "Avocado",
             strawberry_s: "Strawberry (Small 275ml)", strawberry_l: "Strawberry (Large 1L)",
             mango_s: "Mango (Small 275ml)", mango_l: "Mango (Large 1L)",
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             berry_s: "Berry (Small 275ml)", berry_l: "Berry (Large 1L)",
             pineapple_s: "Pineapple (Small 275ml)", pineapple_l: "Pineapple (Large 1L)",
             lemonade_s: "Lemonade (Small 275ml)", lemonade_l: "Lemonade (Large 1L)",
-            lemon_s: "Lemon (Small 275ml)", lemon_l: "Lemon (Large 1L)",
+            orange_s: "Orange (Small 275ml)", orange_l: "Orange (Large 1L)",
             watermelon_s: "Watermelon (Small 275ml)", watermelon_l: "Watermelon (Large 1L)",
             passion_fruit_s: "Passion Fruit (Small 275ml)", passion_fruit_l: "Passion Fruit (Large 1L)",
             avocado_s: "Avocado (Small 275ml)", avocado_l: "Avocado (Large 1L)"
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             large_label: "كبير 1 ليتر",
             strawberry: "فريز", mango: "منغا", cocktail: "كوكتيل",
             banana_milk: "حليب و موز", kiwi: "كيوي", berry: "توت",
-            pineapple: "اناناس", lemonade: "ليموناضة", lemon: "ليمون",
+            pineapple: "اناناس", lemonade: "ليموناضة", orange: "برتقال",
             watermelon: "بطيخ", passion_fruit: "باشن فروت", avocado: "افوكا",
             strawberry_s: "فريز (صغير 275 مل)", strawberry_l: "فريز (كبير 1 ليتر)",
             mango_s: "منغا (صغير 275 مل)", mango_l: "منغا (كبير 1 ليتر)",
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
             berry_s: "توت (صغير 275 مل)", berry_l: "توت (كبير 1 ليتر)",
             pineapple_s: "اناناس (صغير 275 مل)", pineapple_l: "اناناس (كبير 1 ليتر)",
             lemonade_s: "ليموناضة (صغير 275 مل)", lemonade_l: "ليموناضة (كبير 1 ليتر)",
-            lemon_s: "ليمون (صغير 275 مل)", lemon_l: "ليمون (كبير 1 ليتر)",
+            orange_s: "برتقال (صغير 275 مل)", orange_l: "برتقال (كبير 1 ليتر)",
             watermelon_s: "بطيخ (صغير 275 مل)", watermelon_l: "بطيخ (كبير 1 ليتر)",
             passion_fruit_s: "باشن فروت (صغير 275 مل)", passion_fruit_l: "باشن فروت (كبير 1 ليتر)",
             avocado_s: "افوكا (صغير 275 مل)", avocado_l: "افوكا (كبير 1 ليتر)"
@@ -153,15 +153,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendOrder = () => {
         const shopName = shopNameInput.value.trim();
         const address = addressInput.value.trim();
+        const t = translations[currentLang];
 
         if (!shopName) {
-            showToast(translations[currentLang].alertName);
+            showToast(t.alertName);
             shopNameInput.focus();
             return;
         }
 
         if (!address) {
-            showToast(translations[currentLang].alertAddress);
+            showToast(t.alertAddress);
             addressInput.focus();
             return;
         }
@@ -173,7 +174,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         items.forEach(item => {
             const quantity = parseInt(item.value);
-            const t = translations[currentLang];
             if (quantity > 0) {
                 const nameKey = item.getAttribute('data-name');
                 const translatedName = t[nameKey];
@@ -181,18 +181,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 const itemTotal = quantity * price;
                 grandTotal += itemTotal;
                 
-                orderDetails += `- ${translatedName}: ${quantity} x ${price.toLocaleString()} = ${itemTotal.toLocaleString()} ${t.currency}\n`;
+                orderDetails += `• ${translatedName}\n  ${quantity} x ${price.toLocaleString()} = ${itemTotal.toLocaleString()}\n`;
                 hasItems = true;
             }
         });
 
         if (!hasItems) {
-            showToast(translations[currentLang].alertItems);
+            showToast(t.alertItems);
             return;
         }
 
-        const t = translations[currentLang];
-        const message = `*${shopName}*\n\n${t.msgItems}\n${orderDetails}\n*${t.totalLabel}: ${grandTotal.toLocaleString()} ${t.currency}*\n\n${t.addressLabel} ${address}`;
+        const separator = "--------------------------";
+        const message = `*NEW ORDER: ${shopName}*\n${separator}\n*${t.msgItems}*\n${orderDetails}${separator}\n*${t.totalLabel}: ${grandTotal.toLocaleString()} ${t.currency}*\n${separator}\n*${t.addressLabel}* ${address}`;
         
         // Constructing the URL with encoded message
         const whatsappUrl = `https://wa.me/${MY_PHONE_NUMBER}?text=${encodeURIComponent(message)}`;
