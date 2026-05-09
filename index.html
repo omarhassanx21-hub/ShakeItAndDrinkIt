@@ -2,8 +2,15 @@
 <html lang="en" translate="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Shake It And Drink It - Order Portal</title>
+    
+    <!-- Social Media / WhatsApp Meta Tags -->
+    <meta property="og:title" content="Shake It And Drink It - Wholesale Portal">
+    <meta property="og:description" content="Premium fresh cocktails for your coffee shop. Order directly via WhatsApp.">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#010409">
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,7 +31,7 @@
         <div class="cocktail-item">
             <div class="cocktail-info">
                 <h3 data-i18n="espresso_martini">Espresso Martini</h3>
-                <span>$8.50 / <span data-i18n="unit">unit</span></span>
+                <span><span data-i18n="currency">$</span>8.50 / <span data-i18n="unit">unit</span></span>
                 <div class="item-total"><span data-i18n="subtotal_label">Subtotal</span>: <span data-subtotal="espresso_martini">$0.00</span></div>
             </div>
             <div class="quantity-controls">
@@ -38,7 +45,7 @@
         <div class="cocktail-item">
             <div class="cocktail-info">
                 <h3 data-i18n="classic_negroni">Classic Negroni</h3>
-                <span>$9.00 / <span data-i18n="unit">unit</span></span>
+                <span><span data-i18n="currency">$</span>9.00 / <span data-i18n="unit">unit</span></span>
                 <div class="item-total"><span data-i18n="subtotal_label">Subtotal</span>: <span data-subtotal="classic_negroni">$0.00</span></div>
             </div>
             <div class="quantity-controls">
@@ -52,7 +59,7 @@
         <div class="cocktail-item">
             <div class="cocktail-info">
                 <h3 data-i18n="old_fashioned">Old Fashioned</h3>
-                <span>$10.00 / <span data-i18n="unit">unit</span></span>
+                <span><span data-i18n="currency">$</span>10.00 / <span data-i18n="unit">unit</span></span>
                 <div class="item-total"><span data-i18n="subtotal_label">Subtotal</span>: <span data-subtotal="old_fashioned">$0.00</span></div>
             </div>
             <div class="quantity-controls">
@@ -64,7 +71,7 @@
     </div>
 
     <div class="total-summary">
-        <span data-i18n="totalLabel">Total</span>: <span id="grand-total-display">$0.00</span>
+        <span data-i18n="totalLabel">Total</span><span id="grand-total-display">$0.00</span>
     </div>
 
     <div class="shop-info">

@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
             title: "Shake It And Drink It",
             subtitle: "Fresh cocktails for your coffee shop",
             unit: "unit",
+            currency: "$",
             shopLabel: "Coffee Shop Name:",
             shopPlaceholder: "Enter your shop name...",
             addressLabel: "Delivery Address:",
@@ -31,9 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
             old_fashioned: "Old Fashioned"
         },
         ar: {
-            title:" خضا و شربا",
+            title: "خضا و شربا",
             subtitle: "كوكتيلات طازجة لمقهى الخاص بك",
             unit: "وحدة",
+            currency: "$",
             shopLabel: "اسم المقهى:",
             shopPlaceholder: "أدخل اسم المقهى الخاص بك...",
             addressLabel: "عنوان التوصيل:",
@@ -78,6 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateTotals = () => {
         let grandTotal = 0;
+        const currency = translations[currentLang].currency;
+        
         document.querySelectorAll('.qty').forEach(input => {
             const nameKey = input.getAttribute('data-name');
             const quantity = parseInt(input.value) || 0;
@@ -86,11 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
             grandTotal += subtotal;
 
             const subtotalDisplay = document.querySelector(`[data-subtotal="${nameKey}"]`);
-            if (subtotalDisplay) subtotalDisplay.textContent = `$${subtotal.toFixed(2)}`;
+            if (subtotalDisplay) subtotalDisplay.textContent = `${currency}${subtotal.toFixed(2)}`;
         });
 
         const grandTotalDisplay = document.getElementById('grand-total-display');
-        if (grandTotalDisplay) grandTotalDisplay.textContent = `$${grandTotal.toFixed(2)}`;
+        if (grandTotalDisplay) grandTotalDisplay.textContent = `${currency}${grandTotal.toFixed(2)}`;
     };
 
     const showToast = (message) => {
@@ -132,14 +136,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         items.forEach(item => {
             const quantity = parseInt(item.value);
+            const t = translations[currentLang];
             if (quantity > 0) {
                 const nameKey = item.getAttribute('data-name');
-                const translatedName = translations[currentLang][nameKey];
+                const translatedName = t[nameKey];
                 const price = cocktailPrices[nameKey];
                 const itemTotal = quantity * price;
                 grandTotal += itemTotal;
                 
-                orderDetails += `- ${translatedName}: ${quantity} x $${price.toFixed(2)} = $${itemTotal.toFixed(2)}\n`;
+                orderDetails += `- ${translatedName}: ${quantity} x ${t.currency}${price.toFixed(2)} = ${t.currency}${itemTotal.toFixed(2)}\n`;
                 hasItems = true;
             }
         });
@@ -150,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const t = translations[currentLang];
-        const message = `*${shopName}*\n\n${t.msgItems}\n${orderDetails}\n*${t.totalLabel}: $${grandTotal.toFixed(2)}*\n\n${t.addressLabel} ${address}`;
+        const message = `*${shopName}*\n\n${t.msgItems}\n${orderDetails}\n*${t.totalLabel}: ${t.currency}${grandTotal.toFixed(2)}*\n\n${t.addressLabel} ${address}`;
         
         // Constructing the URL with encoded message
         const whatsappUrl = `https://wa.me/${MY_PHONE_NUMBER}?text=${encodeURIComponent(message)}`;
