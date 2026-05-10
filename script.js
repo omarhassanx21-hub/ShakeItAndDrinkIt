@@ -178,6 +178,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateTotals();
             };
         });
+
+        // Ensure the total is synchronized after rendering
+        updateTotals();
     };
 
     const updateTotals = () => {
@@ -241,6 +244,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const baseId = nameKey.replace(/_[sl]$/, '');
                 const itemData = juiceData.find(j => j.id === baseId);
                 
+                if (!itemData) return; // Skip if data is missing
+
                 const price = parseInt(item.getAttribute('data-price')) || 0;
                 const translatedName = `${currentLang === 'ar' ? itemData.ar : itemData.en} (${t[isSmall ? 'small_label' : 'large_label']})`;
                 const itemTotal = quantity * price;
