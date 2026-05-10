@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="size-info"><span>${translations[currentLang].small_label}</span><span class="price-tag">${item.price_s.toLocaleString()} L.P</span></div>
                         <div class="quantity-controls">
                             <button class="qty-btn minus" type="button">−</button>
-                            <input type="number" class="qty" data-name="${item.id}_s" data-price="${item.price_s}" min="0" value="0" readonly>
+                            <input type="number" class="qty" data-name="${item.id}_s" data-price="${item.price_s}" min="0" value="${currentQuantities[item.id + '_s'] || 0}" readonly>
                             <button class="qty-btn plus" type="button">+</button>
                         </div>
                     </div>
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="size-info"><span>${translations[currentLang].large_label}</span><span class="price-tag">${item.price_l.toLocaleString()} L.P</span></div>
                         <div class="quantity-controls">
                             <button class="qty-btn minus" type="button">−</button>
-                            <input type="number" class="qty" data-name="${item.id}_l" data-price="${item.price_l}" min="0" value="0" readonly>
+                            <input type="number" class="qty" data-name="${item.id}_l" data-price="${item.price_l}" min="0" value="${currentQuantities[item.id + '_l'] || 0}" readonly>
                             <button class="qty-btn plus" type="button">+</button>
                         </div>
                     </div>
