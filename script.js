@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const shopNameInput = document.getElementById('shopName');
     const addressInput = document.getElementById('address');
     const langBtns = document.querySelectorAll('.lang-btn');
+    const grandTotalDisplay = document.getElementById('grand-total-display');
 
     const switchLanguage = (lang) => {
         currentLang = lang;
@@ -145,8 +146,11 @@ document.addEventListener('DOMContentLoaded', () => {
         juiceData.forEach(item => {
             const card = document.createElement('div');
             card.className = 'juice-card';
+            
+            const flavorTitle = currentLang === 'ar' ? item.ar : item.en;
+
             card.innerHTML = `
-                <h2 class="flavor-title">${currentLang === 'ar' ? item.ar : item.en}</h2>
+                <h2 class="flavor-title"></h2>
                 <div class="size-options">
                     <div class="size-row">
                         <div class="size-info"><span>${translations[currentLang].small_label}</span><span class="price-tag">${item.price_s.toLocaleString()} L.P</span></div>
@@ -166,6 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
+
+            // Set flavor title via textContent for XSS protection
+            card.querySelector('.flavor-title').textContent = flavorTitle;
             menuContainer.appendChild(card);
         });
 
@@ -194,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
             grandTotal += subtotal;
         });
 
-        const grandTotalDisplay = document.getElementById('grand-total-display');
         if (grandTotalDisplay) grandTotalDisplay.textContent = `${grandTotal.toLocaleString()} ${currency}`;
     };
 
