@@ -308,8 +308,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // 3. Constructing the URL with encoded message
             const whatsappUrl = `https://wa.me/${MY_PHONE_NUMBER}?text=${encodeURIComponent(message)}`;
 
-            // 4. Redirect user to WhatsApp
-            window.open(whatsappUrl, '_blank');
+            // 4. Redirect user to WhatsApp (Current tab to avoid popup blockers)
+            window.location.href = whatsappUrl;
 
             // 5. Reset the form to prevent mistakes
             resetOrderForm();
