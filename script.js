@@ -133,6 +133,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderMenu = () => {
         const menuContainer = document.getElementById('menu');
         if (!menuContainer) return;
+
+        // Capture current quantities to persist them through language switch or re-renders
+        const currentQuantities = {};
+        document.querySelectorAll('.qty').forEach(input => {
+            currentQuantities[input.getAttribute('data-name')] = input.value;
+        });
+
         menuContainer.innerHTML = '';
 
         juiceData.forEach(item => {
