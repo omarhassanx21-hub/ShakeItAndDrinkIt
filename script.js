@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- CONFIGURATION ---
-    const MY_PHONE_NUMBER = "96103036672"; // REPLACE WITH YOUR PHONE NUMBER (include country code, no +)
+    const MY_PHONE_NUMBER = "9613036672"; // Corrected: removed leading zero after country code
     
     // --- FIREBASE SETUP ---
     const firebaseConfig = {
@@ -25,15 +25,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const translations = {
         en: {
             title: "Shake It And Drink It",
-            subtitle: "Fresh juices for your coffee shop",
+            subtitle: "Fresh juices delivered to you",
             unit: "unit",
             currency: "L.P",
-            shopLabel: "Coffee Shop Name:",
-            shopPlaceholder: "Enter your shop name...",
+            shopLabel: "Customer Name:",
+            shopPlaceholder: "Enter your name...",
             addressLabel: "Delivery Address:",
             addressPlaceholder: "Enter your address...",
             orderBtn: "Send Order via WhatsApp",
-            alertName: "Please enter your coffee shop name.",
+            alertName: "Please enter your name.",
             alertAddress: "Please enter your delivery address.",
             alertItems: "Please select at least one juice quantity.",
             msgItems: "Items:",
@@ -60,15 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         ar: {
             title: "خضا و شربا",
-            subtitle: "عصائر طازجة لمقهى الخاص بك",
+            subtitle: "عصائر طازجة تصلكم أينما كنتم",
             unit: "وحدة",
             currency: "L.P",
-            shopLabel: "اسم المقهى:",
-            shopPlaceholder: "أدخل اسم المقهى الخاص بك...",
+            shopLabel: "اسم العميل:",
+            shopPlaceholder: "أدخل اسمك...",
             addressLabel: "عنوان التوصيل:",
             addressPlaceholder: "أدخل عنوانك...",
             orderBtn: "إرسال الطلب عبر واتساب",
-            alertName: "يرجى إدخال اسم المقهى الخاص بك.",
+            alertName: "يرجى إدخال اسمك.",
             alertAddress: "يرجى إدخال عنوان التوصيل الخاص بك.",
             alertItems: "يرجى اختيار كمية عصير واحدة على الأقل.",
             msgItems: "الأصناف:",
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const orderBtn = document.getElementById('whatsapp-btn');
-    const shopNameInput = document.getElementById('shopName');
+    const clientNameInput = document.getElementById('clientName');
     const addressInput = document.getElementById('address');
     const langBtns = document.querySelectorAll('.lang-btn');
     const grandTotalDisplay = document.getElementById('grand-total-display');
@@ -145,6 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
         menuContainer.innerHTML = '';
 
         juiceData.forEach(item => {
+            // Skip rendering if the item is marked as unavailable
+            if (item.available === false) return;
+
             const card = document.createElement('div');
             card.className = 'juice-card';
             
@@ -154,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h2 class="flavor-title"></h2>
                 <div class="size-options">
                     <div class="size-row">
-                        <div class="size-info"><span>${translations[currentLang].small_label}</span><span class="price-tag">${item.price_s.toLocaleString()} L.P</span></div>
+                        <div class="size-info"><span>${translations[currentLang].small_label}</span><span class="price-tag">${(item.price_s || 0).toLocaleString()} L.P</span></div>
                         <div class="quantity-controls">
                             <button class="qty-btn minus" type="button">−</button>
                             <input type="number" class="qty" data-name="${item.id}_s" data-price="${item.price_s}" min="0" value="${currentQuantities[item.id + '_s'] || 0}" readonly>
@@ -162,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
                     <div class="size-row">
-                        <div class="size-info"><span>${translations[currentLang].large_label}</span><span class="price-tag">${item.price_l.toLocaleString()} L.P</span></div>
+                        <div class="size-info"><span>${translations[currentLang].large_label}</span><span class="price-tag">${(item.price_l || 0).toLocaleString()} L.P</span></div>
                         <div class="quantity-controls">
                             <button class="qty-btn minus" type="button">−</button>
                             <input type="number" class="qty" data-name="${item.id}_l" data-price="${item.price_l}" min="0" value="${currentQuantities[item.id + '_l'] || 0}" readonly>
@@ -205,6 +208,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (grandTotalDisplay) grandTotalDisplay.textContent = `${grandTotal.toLocaleString()} ${currency}`;
     };
 
+    const resetOrderForm = () => {
+        if (clientNameInput) clientNameInput.value = '';
+        if (addressInput) addressInput.value = '';
+        document.querySelectorAll('.qty').forEach(input => {
+            input.value = 0;
+        });
+        updateTotals();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     const showToast = (message) => {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
@@ -221,14 +234,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     };
 
-    const sendOrder = () => {
-        const shopName = shopNameInput.value.trim();
+    const sendOrder = async () => {
+        const clientName = clientNameInput.value.trim();
         const address = addressInput.value.trim();
         const t = translations[currentLang];
 
-        if (!shopName) {
+        if (!clientName) {
             showToast(t.alertName);
-            shopNameInput.focus();
+            clientNameInput.focus();
             return;
         }
 
@@ -240,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const items = document.querySelectorAll('.qty');
         let orderDetails = "";
+        let dbItems = [];
         let grandTotal = 0;
         let hasItems = false;
 
@@ -259,6 +273,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 grandTotal += itemTotal;
                 
                 orderDetails += `• ${translatedName}\n  ${quantity} x ${price.toLocaleString()} = ${itemTotal.toLocaleString()}\n`;
+                
+                dbItems.push({
+                    id: nameKey, // Uses size-specific ID (e.g. strawberry_s) for accurate analytics
+                    name: translatedName,
+                    quantity: quantity,
+                    price: price
+                });
                 hasItems = true;
             }
         });
@@ -268,14 +289,35 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const separator = "--------------------------";
-        const message = `*NEW ORDER: ${shopName}*\n${separator}\n*${t.msgItems}*\n${orderDetails}${separator}\n*${t.totalLabel}: ${grandTotal.toLocaleString()} ${t.currency}*\n${separator}\n*${t.addressLabel}* ${address}`;
-        
-        // Constructing the URL with encoded message
-        const whatsappUrl = `https://wa.me/${MY_PHONE_NUMBER}?text=${encodeURIComponent(message)}`;
-        
-        // Redirect user to WhatsApp in a new tab
-        window.open(whatsappUrl, '_blank');
+        try {
+            // 1. Save to Firestore for Admin History
+            await db.collection('orders').add({
+                clientName: clientName,
+                address: address,
+                items: dbItems,
+                total: grandTotal,
+                currency: t.currency,
+                status: 'pending',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            // 2. Construct WhatsApp Message
+            const separator = "--------------------------";
+            const message = `*NEW ORDER: ${clientName}*\n${separator}\n*${t.msgItems}*\n${orderDetails}${separator}\n*${t.totalLabel}: ${grandTotal.toLocaleString()} ${t.currency}*\n${separator}\n*${t.addressLabel}* ${address}`;
+
+            // 3. Constructing the URL with encoded message
+            const whatsappUrl = `https://wa.me/${MY_PHONE_NUMBER}?text=${encodeURIComponent(message)}`;
+
+            // 4. Redirect user to WhatsApp
+            window.open(whatsappUrl, '_blank');
+
+            // 5. Reset the form to prevent mistakes
+            resetOrderForm();
+
+        } catch (error) {
+            console.error("Error saving order:", error);
+            showToast("Failed to place order. Please try again.");
+        }
     };
 
     langBtns.forEach(btn => {

@@ -1,0 +1,10 @@
+# Ignore the VS Code settings folder
+.vscode/
+index2.html
+style2.css
+script2.js
+
+# Ignore system files and logs
+.DS_Store
+thumbs.db
+*.log
