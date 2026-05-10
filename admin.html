@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Shake It</title>
+    <style>
+        body { font-family: -apple-system, system-ui, sans-serif; padding: 20px; background: #f0f2f5; color: #1c1e21; }
+        .admin-card, .login-card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 24px; max-width: 500px; margin-left: auto; margin-right: auto; }
+        input { display: block; width: 100%; margin: 10px 0; padding: 10px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; cursor: pointer; background: #312e81; color: white; border: none; border-radius: 8px; font-weight: 600; transition: background 0.2s; }
+        button:hover { background: #1e1b4b; }
+        .juice-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 12px 16px; margin-top: 8px; border: 1px solid #eee; border-radius: 8px; }
+        .delete-btn { background: #ef4444; width: auto; padding: 6px 12px; font-size: 12px; }
+        .delete-btn:hover { background: #dc2626; }
+        .logout-btn { background: #64748b; margin-top: 20px; }
+        #admin-content { display: none; }
+        #login-form { display: block; }
+        h1, h3 { text-align: center; color: #312e81; }
+    </style>
+</head>
+<body>
+    <div id="login-form" class="login-card">
+        <h1>Admin Login</h1>
+        <button onclick="loginWithGoogle()">Sign In with Google</button>
+    </div>
+    
+    <div id="admin-content">
+        <h1>Juice Inventory Manager</h1>
+        
+        <div class="admin-card">
+        <h3>Add New Juice</h3>
+        <input type="text" id="j_id" placeholder="ID (e.g. orange)">
+        <input type="text" id="j_en" placeholder="English Name">
+        <input type="text" id="j_ar" placeholder="Arabic Name">
+        <input type="number" id="j_ps" placeholder="Small Price (L.P)">
+        <input type="number" id="j_pl" placeholder="Large Price (L.P)">
+        <button onclick="addJuice()">Add Juice</button>
+        </div>
+
+        <h3>Existing Items</h3>
+        <div id="juice-list"></div>
+        
+        <button class="logout-btn" onclick="logout()">Sign Out</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCW76Q6rfX8mt5aO6QVNKdPOWbpuT-5K6I",
+            authDomain: "shake-it-and-drink-it.firebaseapp.com",
+            projectId: "shake-it-and-drink-it",
+            storageBucket: "shake-it-and-drink-it.firebasestorage.app",
+            messagingSenderId: "472657702271",
+            appId: "1:472657702271:web:d912c43badf7d2cf81fe4a",
+            measurementId: "G-QM6XHXYZFT"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Handle Auth State Changes
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('admin-content').style.display = 'block';
+                loadJuices();
+            } else {
+                document.getElementById('login-form').style.display = 'block';
+                document.getElementById('admin-content').style.display = 'none';
+            }
+        });
+        
+        async function loginWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            try {
+                await auth.signInWithPopup(provider);
+            } catch (error) {
+                alert("Login failed: " + error.message);
+            }
+        }
+
+        function logout() {
+            auth.signOut();
+            location.reload(); // Reset UI state
+        }
+
+        async function addJuice() {
+            const id = document.getElementById('j_id').value.trim();
+            const en = document.getElementById('j_en').value.trim();
+            const ar = document.getElementById('j_ar').value.trim();
+            const price_s = parseInt(document.getElementById('j_ps').value);
+            const price_l = parseInt(document.getElementById('j_pl').value);
+
+            if (!id || !en || !ar || isNaN(price_s) || isNaN(price_l)) {
+                alert("Please fill all fields correctly.");
+                return;
+            }
+
+            try {
+                await db.collection('juices').doc(id).set({ id, en, ar, price_s, price_l });
+                alert("Juice added successfully!");
+                ['j_id', 'j_en', 'j_ar', 'j_ps', 'j_pl'].forEach(fieldId => document.getElementById(fieldId).value = '');
+                loadJuices();
+            } catch (error) {
+                alert("Error adding juice: " + error.message);
+            }
+        }
+
+        async function loadJuices() {
+            const list = document.getElementById('juice-list');
+            list.innerHTML = 'Loading...';
+            const snapshot = await db.collection('juices').get();
+            list.innerHTML = '';
+            snapshot.forEach(doc => {
+                const item = doc.data();
+                const div = document.createElement('div');
+                div.className = 'juice-item';
+                div.innerHTML = `
+                    <span><strong>${item.en}</strong> (${item.price_s} / ${item.price_l} L.P)</span>
+                    <button class="delete-btn" onclick="deleteJuice('${doc.id}')">Delete</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        async function deleteJuice(id) {
+            if(confirm('Are you sure?')) {
+                await db.collection('juices').doc(id).delete();
+                loadJuices();
+            }
+        }
+    </script>
+</body>
+</html>

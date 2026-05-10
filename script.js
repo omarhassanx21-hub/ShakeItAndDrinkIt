@@ -1,20 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- CONFIGURATION ---
     const MY_PHONE_NUMBER = "96103036672"; // REPLACE WITH YOUR PHONE NUMBER (include country code, no +)
-    const cocktailPrices = {
-        strawberry_s: 150000, strawberry_l: 450000,
-        mango_s: 150000, mango_l: 450000,
-        cocktail_s: 150000, cocktail_l: 450000,
-        banana_milk_s: 150000, banana_milk_l: 450000,
-        kiwi_s: 150000, kiwi_l: 450000,
-        berry_s: 150000, berry_l: 450000,
-        pineapple_s: 150000, pineapple_l: 450000,
-        lemonade_s: 150000, lemonade_l: 450000,
-        orange_s: 150000, orange_l: 450000,
-        watermelon_s: 150000, watermelon_l: 450000,
-        passion_fruit_s: 150000, passion_fruit_l: 450000,
-        avocado_s: 150000, avocado_l: 450000
+    
+    // --- FIREBASE SETUP ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyCW76Q6rfX8mt5aO6QVNKdPOWbpuT-5K6I",
+        authDomain: "shake-it-and-drink-it.firebaseapp.com",
+        projectId: "shake-it-and-drink-it",
+        storageBucket: "shake-it-and-drink-it.firebasestorage.app",
+        messagingSenderId: "472657702271",
+        appId: "1:472657702271:web:d912c43badf7d2cf81fe4a",
+        measurementId: "G-QM6XHXYZFT"
     };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let juiceData = [];
     // ---------------------
 
     let currentLang = 'en';
@@ -117,17 +119,69 @@ document.addEventListener('DOMContentLoaded', () => {
         langBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
     };
 
+    const fetchJuicesFromFirestore = async () => {
+        try {
+            const snapshot = await db.collection('juices').get();
+            juiceData = snapshot.docs.map(doc => doc.data());
+            renderMenu();
+        } catch (error) {
+            console.error("Firestore Error:", error.code, error.message);
+            showToast("Failed to load menu: " + error.message);
+        }
+    };
+
+    const renderMenu = () => {
+        const menuContainer = document.getElementById('menu');
+        if (!menuContainer) return;
+        menuContainer.innerHTML = '';
+
+        juiceData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'juice-card';
+            card.innerHTML = `
+                <h2 class="flavor-title">${currentLang === 'ar' ? item.ar : item.en}</h2>
+                <div class="size-options">
+                    <div class="size-row">
+                        <div class="size-info"><span>${translations[currentLang].small_label}</span><span class="price-tag">${item.price_s.toLocaleString()} L.P</span></div>
+                        <div class="quantity-controls">
+                            <button class="qty-btn minus" type="button">−</button>
+                            <input type="number" class="qty" data-name="${item.id}_s" data-price="${item.price_s}" min="0" value="0" readonly>
+                            <button class="qty-btn plus" type="button">+</button>
+                        </div>
+                    </div>
+                    <div class="size-row">
+                        <div class="size-info"><span>${translations[currentLang].large_label}</span><span class="price-tag">${item.price_l.toLocaleString()} L.P</span></div>
+                        <div class="quantity-controls">
+                            <button class="qty-btn minus" type="button">−</button>
+                            <input type="number" class="qty" data-name="${item.id}_l" data-price="${item.price_l}" min="0" value="0" readonly>
+                            <button class="qty-btn plus" type="button">+</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            menuContainer.appendChild(card);
+        });
+
+        // Re-attach listeners for plus/minus buttons
+        document.querySelectorAll('.qty-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                const input = e.target.parentElement.querySelector('.qty');
+                let val = parseInt(input.value) || 0;
+                input.value = e.target.classList.contains('plus') ? val + 1 : Math.max(0, val - 1);
+                updateTotals();
+            };
+        });
+    };
+
     const updateTotals = () => {
         let grandTotal = 0;
         const currency = translations[currentLang].currency;
         
         document.querySelectorAll('.qty').forEach(input => {
-            const nameKey = input.getAttribute('data-name');
             const quantity = parseInt(input.value) || 0;
-            const price = cocktailPrices[nameKey];
+            const price = parseInt(input.getAttribute('data-price')) || 0;
             const subtotal = quantity * price;
             grandTotal += subtotal;
-
         });
 
         const grandTotalDisplay = document.getElementById('grand-total-display');
@@ -175,9 +229,13 @@ document.addEventListener('DOMContentLoaded', () => {
         items.forEach(item => {
             const quantity = parseInt(item.value);
             if (quantity > 0) {
-                const nameKey = item.getAttribute('data-name');
-                const translatedName = t[nameKey];
-                const price = cocktailPrices[nameKey];
+                const nameKey = item.getAttribute('data-name'); // e.g., strawberry_s
+                const isSmall = nameKey.endsWith('_s');
+                const baseId = nameKey.replace(/_[sl]$/, '');
+                const itemData = juiceData.find(j => j.id === baseId);
+                
+                const price = parseInt(item.getAttribute('data-price')) || 0;
+                const translatedName = `${currentLang === 'ar' ? itemData.ar : itemData.en} (${t[isSmall ? 'small_label' : 'large_label']})`;
                 const itemTotal = quantity * price;
                 grandTotal += itemTotal;
                 
@@ -202,32 +260,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     langBtns.forEach(btn => {
-        btn.addEventListener('click', () => switchLanguage(btn.dataset.lang));
-    });
-
-    // Quantity Control Logic
-    document.querySelectorAll('.quantity-controls').forEach(control => {
-        const minusBtn = control.querySelector('.minus');
-        const plusBtn = control.querySelector('.plus');
-        const input = control.querySelector('.qty');
-
-        minusBtn.addEventListener('click', () => {
-            const val = parseInt(input.value) || 0;
-            if (val > 0) input.value = val - 1;
-            updateTotals();
-        });
-
-        plusBtn.addEventListener('click', () => {
-            const val = parseInt(input.value) || 0;
-            input.value = val + 1;
-            updateTotals();
+        btn.addEventListener('click', () => {
+            switchLanguage(btn.dataset.lang);
+            renderMenu();
         });
     });
 
-    updateTotals(); // Initial calculation
-
-    // Attach event listener
-    if (orderBtn) {
-        orderBtn.addEventListener('click', sendOrder);
-    }
+    fetchJuicesFromFirestore();
+    if (orderBtn) orderBtn.addEventListener('click', sendOrder);
 });
